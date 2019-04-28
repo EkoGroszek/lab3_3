@@ -1,10 +1,10 @@
 package edu.iis.mto.time;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.joda.time.Hours;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
 	private static final int VALID_PERIOD_HOURS = 24;
@@ -12,8 +12,14 @@ public class Order {
 	private List<OrderItem> items = new ArrayList<OrderItem>();
 	private DateTime subbmitionDate;
 
+	private FakeTimer fakeDate;
+
 	public Order() {
 		orderState = State.CREATED;
+		fakeDate = new FakeTimer();
+	}
+	public void setFakeDate(DateTime dateTime){
+		fakeDate.setFakeDateTime(dateTime);
 	}
 
 	public void addItem(OrderItem item) {
@@ -28,13 +34,15 @@ public class Order {
 		requireState(State.CREATED);
 
 		orderState = State.SUBMITTED;
-		subbmitionDate = new DateTime();
-
+//		subbmitionDate = new DateTime();
+		subbmitionDate = fakeDate.getFakeDateTime();
+//		fakeSubbmisionDate = new FakeTimer();
 	}
 
 	public void confirm() {
 		requireState(State.SUBMITTED);
-		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, new DateTime()).getHours();
+		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, fakeDate.getFakeDateTime()).getHours();
+//		int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, new DateTime()).getHours();
 		if(hoursElapsedAfterSubmittion > VALID_PERIOD_HOURS){
 			orderState = State.CANCELLED;
 			throw new OrderExpiredException();
