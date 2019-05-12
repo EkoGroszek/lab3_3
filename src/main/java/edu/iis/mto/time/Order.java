@@ -13,15 +13,15 @@ public class Order {
     private List<OrderItem> items = new ArrayList<OrderItem>();
     private DateTime subbmitionDate;
 
-    private FakeTimer fakeDate;
+    private Timer fakeDate;
 
     public Order() {
         orderState = State.CREATED;
-        fakeDate = new FakeTimer();
+        fakeDate = new Timer();
     }
 
-    public void setFakeDate(DateTime dateTime) {
-        fakeDate.setFakeDateTime(dateTime);
+    public void setDate(DateTime dateTime) {
+        fakeDate.setDateTime(dateTime);
     }
 
     public void addItem(OrderItem item) {
@@ -36,12 +36,12 @@ public class Order {
         requireState(State.CREATED);
 
         orderState = State.SUBMITTED;
-        subbmitionDate = fakeDate.getFakeDateTime();
+        subbmitionDate = fakeDate.getDateTime();
     }
 
     public void confirm() {
         requireState(State.SUBMITTED);
-        int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, fakeDate.getFakeDateTime()).getHours();
+        int hoursElapsedAfterSubmittion = Hours.hoursBetween(subbmitionDate, fakeDate.getDateTime()).getHours();
         if (hoursElapsedAfterSubmittion > VALID_PERIOD_HOURS) {
             orderState = State.CANCELLED;
             throw new OrderExpiredException();

@@ -21,17 +21,17 @@ public class OrderTest {
 
     @Test(expected = OrderExpiredException.class) public void afterExpirationShouldThrowOrderExpiredException() {
         order.addItem(orderItem);
-        order.setFakeDate(new DateTime(2019, 4, 1, 0, 0));
+        order.setDate(new DateTime(2019, 4, 1, 0, 0));
         order.submit();
-        order.setFakeDate(new DateTime(2019, 4, 30, 0, 0));
+        order.setDate(new DateTime(2019, 4, 30, 0, 0));
         order.confirm();
     }
 
     @Test public void beforeExpirationStatusShouldNoTBeCancelled() {
         order.addItem(orderItem);
-        order.setFakeDate(new DateTime(2019, 4, 1, 0, 0));
+        order.setDate(new DateTime(2019, 4, 1, 0, 0));
         order.submit();
-        order.setFakeDate(new DateTime(2019, 4, 1, 5, 0));
+        order.setDate(new DateTime(2019, 4, 1, 5, 0));
         order.confirm();
 
         Assert.assertThat(order.getOrderState(), is(not(equalTo(Order.State.CANCELLED))));
@@ -39,9 +39,9 @@ public class OrderTest {
 
     @Test public void afterExpirationStatusShouldBeCanceled() {
         order.addItem(orderItem);
-        order.setFakeDate(new DateTime(2019, 4, 1, 0, 0));
+        order.setDate(new DateTime(2019, 4, 1, 0, 0));
         order.submit();
-        order.setFakeDate(new DateTime(2019, 4, 30, 0, 0));
+        order.setDate(new DateTime(2019, 4, 30, 0, 0));
         try {
             order.confirm();
         } catch (OrderExpiredException e) {
